@@ -142,12 +142,20 @@ ImputedSet$steps <- impute(activity$steps, fun=mean)
 
 ```r
 ImputedStepsByDay <- tapply(ImputedSet$steps, ImputedSet$date, sum)
-qplot(ImputedStepsByDay, xlab='Total steps per day (Imputed)', ylab='Frequency using binwith 500', binwidth=500)
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-13-1.png) 
-
 #### 4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
+
+
+```r
+qplot(ImputedStepsByDay, 
+      xlab='Total steps per day (Imputed)', 
+      ylab='Frequency using binwith 500', 
+      binwidth=500)
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-14-1.png) 
+
 
 
 ```r
@@ -185,7 +193,7 @@ ggplot(ImputedSet, aes(interval, steps)) +
     ylab("avarage number of steps")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-16-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-17-1.png) 
 
 * Panel using lattice
 
@@ -198,4 +206,4 @@ xyplot(steps ~ interval | dateType,
 )
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-17-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-18-1.png) 
