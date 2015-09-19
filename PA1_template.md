@@ -50,7 +50,7 @@ stepsByDay <- tapply(activity$steps, activity$date, sum, na.rm=TRUE)
 qplot(stepsByDay, xlab='Total steps per day', ylab='Frequency using binwith 500', binwidth=500)
 ```
 
-![](PA1_files/figure-html/unnamed-chunk-5-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
 
 #### 3. Calculate and report the mean and median total number of steps taken per day
 
@@ -85,7 +85,7 @@ ggplot(data=averageDailySteps, aes(x=interval, y=meanSteps)) +
     ylab("average number of steps taken") 
 ```
 
-![](PA1_files/figure-html/unnamed-chunk-8-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-8-1.png) 
 
 #### 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
@@ -129,7 +129,7 @@ ImputedStepsByDay <- tapply(ImputedSet$steps, ImputedSet$date, sum)
 qplot(ImputedStepsByDay, xlab='Total steps per day (Imputed)', ylab='Frequency using binwith 500', binwidth=500)
 ```
 
-![](PA1_files/figure-html/unnamed-chunk-12-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-12-1.png) 
 
 #### 4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
@@ -169,7 +169,7 @@ ggplot(ImputedSet, aes(interval, steps)) +
     ylab("avarage number of steps")
 ```
 
-![](PA1_files/figure-html/unnamed-chunk-15-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-15-1.png) 
 
 * Panel using lattice
 
@@ -182,4 +182,4 @@ xyplot(steps ~ interval | dateType,
 )
 ```
 
-![](PA1_files/figure-html/unnamed-chunk-16-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-16-1.png) 
