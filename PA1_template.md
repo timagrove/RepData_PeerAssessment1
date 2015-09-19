@@ -77,6 +77,8 @@ averageDailySteps <- aggregate(x=list(meanSteps=activity$steps), by=list(interva
 
 #### 1. Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
 
+* Panel using ggplot2
+
 
 ```r
 ggplot(data=averageDailySteps, aes(x=interval, y=meanSteps)) +
@@ -86,6 +88,20 @@ ggplot(data=averageDailySteps, aes(x=interval, y=meanSteps)) +
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-8-1.png) 
+
+
+* Panel using lattice
+
+
+```r
+xyplot(meanSteps ~ interval,
+       data = averageDailySteps,
+       type = c("l","g")
+)
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-9-1.png) 
+
 
 #### 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
@@ -129,7 +145,7 @@ ImputedStepsByDay <- tapply(ImputedSet$steps, ImputedSet$date, sum)
 qplot(ImputedStepsByDay, xlab='Total steps per day (Imputed)', ylab='Frequency using binwith 500', binwidth=500)
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-12-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-13-1.png) 
 
 #### 4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
@@ -156,7 +172,7 @@ ImputedSet$dateType <-  ifelse(as.POSIXlt(ImputedSet$date)$wday %in% c(0,6), 'we
 
 #### 1.Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). See the README file in the GitHub repository to see an example of what this plot should look like using simulated data.
 
-* Panel using ggplot 
+* Panel using ggplot2 
 
 
 ```r
@@ -169,7 +185,7 @@ ggplot(ImputedSet, aes(interval, steps)) +
     ylab("avarage number of steps")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-15-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-16-1.png) 
 
 * Panel using lattice
 
@@ -182,4 +198,4 @@ xyplot(steps ~ interval | dateType,
 )
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-16-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-17-1.png) 
