@@ -15,7 +15,10 @@ library(ggplot2)
 library(Hmisc)
 ```
 
-#### 2. Set working directory (assumes GitHub is located in default location and the repository "RepData_PeerAssessment1" has been forked and replicated locally)
+#### 2. Set local working directory.  This assumes the following:
+
+* GitHub is located in default location on the local system
+* The repository "RepData_PeerAssessment1" has been forked and replicated locally
 
 ```{r}
 setwd("~/GitHub/RepData_PeerAssessment1")
@@ -28,12 +31,14 @@ activity <- read.csv('activity.csv')
 
 ```
 #### 2. Process/transform the data (if necessary) into a format suitable for your analysis
-```{r}
-#activity$interval <- strptime(gsub("([0-9]{1,2})([0-9]{2})", "\\1:\\2", activity$interval), format='%H:%M')
-```
+
+
+----
 
 
 ## What is mean total number of steps taken per day?
+
+NOTE: The missing values in the dataset can be ignored for these steps.
 
 #### 1. Calculate the total number of steps taken per day
 ```{r}
@@ -55,28 +60,34 @@ stepsByDayMedian <- median(stepsByDay)
 ```
 
 Steps taken per day:
+
 * Mean: `r stepsByDayMean`
 * Median:  `r stepsByDayMedian`
 
 -----
 
 ## What is the average daily activity pattern?
+
+In order to perform the follwing steps, create a data frame of the aggregated data
+
 ```{r}
-averageStepsPerTimeBlock <- aggregate(x=list(meanSteps=activity$steps), by=list(interval=activity$interval), FUN=mean, na.rm=TRUE)
+averageDailySteps <- aggregate(x=list(meanSteps=activity$steps), by=list(interval=activity$interval), FUN=mean, na.rm=TRUE)
 ```
 
 #### 1. Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
+
 ```{r}
-ggplot(data=averageStepsPerTimeBlock, aes(x=interval, y=meanSteps)) +
+ggplot(data=averageDailySteps, aes(x=interval, y=meanSteps)) +
     geom_line() +
     xlab("5-minute interval") +
     ylab("average number of steps taken") 
 ```
 
 #### 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+
 ```{r}
-mostSteps <- which.max(averageStepsPerTimeBlock$meanSteps)
-timeMostSteps <-  gsub("([0-9]{1,2})([0-9]{2})", "\\1:\\2", averageStepsPerTimeBlock[mostSteps,'interval'])
+mostSteps <- which.max(averageDailySteps$meanSteps)
+timeMostSteps <-  gsub("([0-9]{1,2})([0-9]{2})", "\\1:\\2", averageDailySteps[mostSteps,'interval'])
 ```
 
 * Most Steps at: `r timeMostSteps`
@@ -127,4 +138,17 @@ For this part the weekdays() function may be of some help here. Use the dataset 
 
 #### 1.Create a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.
 
+```{r}
+ImputedSet$dateType <-  ifelse(as.POSIXlt(ImputedSet$date)$wday %in% c(0,6), 'weekend', 'weekday')
+```
+
 #### 1.Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). See the README file in the GitHub repository to see an example of what this plot should look like using simulated data.
+
+```{r}
+ImputedSet <- aggregate(steps ~ interval + dateType, data=ImputedSet, mean)
+ggplot(ImputedSet, aes(interval, steps)) + 
+    geom_line() + 
+    facet_grid(dateType ~ .) +
+    xlab("5-minute interval") + 
+    ylab("avarage number of steps")
+```

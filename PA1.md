@@ -9,11 +9,12 @@ September 15, 2015
 ```r
 library(ggplot2)
 library(Hmisc)
-
-#library(scales)
 ```
 
-#### 2. Set working directory (assumes GitHub is located in default location and the repository "RepData_PeerAssessment1" has been forked and replicated locally)
+#### 2. Set local working directory.  This assumes the following:
+
+* GitHub is located in default location on the local system
+* The repository "RepData_PeerAssessment1" has been forked and replicated locally
 
 
 ```r
@@ -28,12 +29,13 @@ activity <- read.csv('activity.csv')
 ```
 #### 2. Process/transform the data (if necessary) into a format suitable for your analysis
 
-```r
-#activity$interval <- strptime(gsub("([0-9]{1,2})([0-9]{2})", "\\1:\\2", activity$interval), format='%H:%M')
-```
+
+----
 
 
 ## What is mean total number of steps taken per day?
+
+NOTE: The missing values in the dataset can be ignored for these steps.
 
 #### 1. Calculate the total number of steps taken per day
 
@@ -47,7 +49,7 @@ stepsByDay <- tapply(activity$steps, activity$date, sum, na.rm=TRUE)
 qplot(stepsByDay, xlab='Total steps per day', ylab='Frequency using binwith 500', binwidth=500)
 ```
 
-![](PA1_files/figure-html/unnamed-chunk-6-1.png) 
+![](PA1_files/figure-html/unnamed-chunk-5-1.png) 
 
 #### 3. Calculate and report the mean and median total number of steps taken per day
 
@@ -57,6 +59,7 @@ stepsByDayMedian <- median(stepsByDay)
 ```
 
 Steps taken per day:
+
 * Mean: 9354.2295082
 * Median:  10395
 
@@ -64,26 +67,31 @@ Steps taken per day:
 
 ## What is the average daily activity pattern?
 
+In order to perform the follwing steps, create a data frame of the aggregated data
+
+
 ```r
-averageStepsPerTimeBlock <- aggregate(x=list(meanSteps=activity$steps), by=list(interval=activity$interval), FUN=mean, na.rm=TRUE)
+averageDailySteps <- aggregate(x=list(meanSteps=activity$steps), by=list(interval=activity$interval), FUN=mean, na.rm=TRUE)
 ```
 
 #### 1. Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
 
+
 ```r
-ggplot(data=averageStepsPerTimeBlock, aes(x=interval, y=meanSteps)) +
+ggplot(data=averageDailySteps, aes(x=interval, y=meanSteps)) +
     geom_line() +
     xlab("5-minute interval") +
     ylab("average number of steps taken") 
 ```
 
-![](PA1_files/figure-html/unnamed-chunk-9-1.png) 
+![](PA1_files/figure-html/unnamed-chunk-8-1.png) 
 
 #### 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
+
 ```r
-mostSteps <- which.max(averageStepsPerTimeBlock$meanSteps)
-timeMostSteps <-  gsub("([0-9]{1,2})([0-9]{2})", "\\1:\\2", averageStepsPerTimeBlock[mostSteps,'interval'])
+mostSteps <- which.max(averageDailySteps$meanSteps)
+timeMostSteps <-  gsub("([0-9]{1,2})([0-9]{2})", "\\1:\\2", averageDailySteps[mostSteps,'interval'])
 ```
 
 * Most Steps at: 8:35
@@ -120,7 +128,7 @@ ImputedStepsByDay <- tapply(ImputedSet$steps, ImputedSet$date, sum)
 qplot(ImputedStepsByDay, xlab='Total steps per day (Imputed)', ylab='Frequency using binwith 500', binwidth=500)
 ```
 
-![](PA1_files/figure-html/unnamed-chunk-13-1.png) 
+![](PA1_files/figure-html/unnamed-chunk-12-1.png) 
 
 #### 4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
@@ -140,4 +148,21 @@ For this part the weekdays() function may be of some help here. Use the dataset 
 
 #### 1.Create a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.
 
+
+```r
+ImputedSet$dateType <-  ifelse(as.POSIXlt(ImputedSet$date)$wday %in% c(0,6), 'weekend', 'weekday')
+```
+
 #### 1.Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). See the README file in the GitHub repository to see an example of what this plot should look like using simulated data.
+
+
+```r
+ImputedSet <- aggregate(steps ~ interval + dateType, data=ImputedSet, mean)
+ggplot(ImputedSet, aes(interval, steps)) + 
+    geom_line() + 
+    facet_grid(dateType ~ .) +
+    xlab("5-minute interval") + 
+    ylab("avarage number of steps")
+```
+
+![](PA1_files/figure-html/unnamed-chunk-15-1.png) 
