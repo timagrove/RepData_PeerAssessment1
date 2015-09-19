@@ -4,12 +4,19 @@ September 15, 2015
 
 ## Load the required Packages and set working directory
 
+#### 1. Packages required
 
 ```r
 library(ggplot2)
-#library(scales)
-#library(Hmisc)
+library(Hmisc)
 
+#library(scales)
+```
+
+#### 2. Set working directory (assumes GitHub is located in default location and the repository "RepData_PeerAssessment1" has been forked and replicated locally)
+
+
+```r
 setwd("~/GitHub/RepData_PeerAssessment1")
 ```
 
@@ -40,7 +47,7 @@ stepsByDay <- tapply(activity$steps, activity$date, sum, na.rm=TRUE)
 qplot(stepsByDay, xlab='Total steps per day', ylab='Frequency using binwith 500', binwidth=500)
 ```
 
-![](PA1_files/figure-html/unnamed-chunk-5-1.png) 
+![](PA1_files/figure-html/unnamed-chunk-6-1.png) 
 
 #### 3. Calculate and report the mean and median total number of steps taken per day
 
@@ -48,6 +55,8 @@ qplot(stepsByDay, xlab='Total steps per day', ylab='Frequency using binwith 500'
 stepsByDayMean <- mean(stepsByDay)
 stepsByDayMedian <- median(stepsByDay)
 ```
+
+Steps taken per day:
 * Mean: 9354.2295082
 * Median:  10395
 
@@ -68,7 +77,7 @@ ggplot(data=averageStepsPerTimeBlock, aes(x=interval, y=meanSteps)) +
     ylab("average number of steps taken") 
 ```
 
-![](PA1_files/figure-html/unnamed-chunk-8-1.png) 
+![](PA1_files/figure-html/unnamed-chunk-9-1.png) 
 
 #### 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
@@ -88,12 +97,42 @@ There are a number of days/intervals where there are missing values (coded as NA
 
 #### 1. Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
 
+
+```r
+numMissingValues <- length(which(is.na(activity$steps)))
+```
+
+* Number of missing values: 2304
+
 #### 2. Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
+
+
+```r
+ImputedSet <- activity
+ImputedSet$steps <- impute(activity$steps, fun=mean)
+```
 
 #### 3. Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
+
+```r
+ImputedStepsByDay <- tapply(ImputedSet$steps, ImputedSet$date, sum)
+qplot(ImputedStepsByDay, xlab='Total steps per day (Imputed)', ylab='Frequency using binwith 500', binwidth=500)
+```
+
+![](PA1_files/figure-html/unnamed-chunk-13-1.png) 
+
 #### 4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
+
+```r
+ImputedStepsByDayMean <- mean(ImputedStepsByDay)
+ImputedStepsByDayMedian <- median(ImputedStepsByDay)
+```
+* Mean (Imputed): 1.0766189\times 10^{4}
+* Median (Imputed):  1.0766189\times 10^{4}
+
+----
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
