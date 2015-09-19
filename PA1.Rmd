@@ -13,6 +13,7 @@ output:
 ```{r, results='hide', warning=FALSE, message=FALSE}
 library(ggplot2)
 library(Hmisc)
+library(lattice)
 ```
 
 #### 2. Set local working directory.  This assumes the following:
@@ -144,11 +145,25 @@ ImputedSet$dateType <-  ifelse(as.POSIXlt(ImputedSet$date)$wday %in% c(0,6), 'we
 
 #### 1.Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). See the README file in the GitHub repository to see an example of what this plot should look like using simulated data.
 
+* Panel using ggplot 
+
 ```{r}
 ImputedSet <- aggregate(steps ~ interval + dateType, data=ImputedSet, mean)
 ggplot(ImputedSet, aes(interval, steps)) + 
     geom_line() + 
-    facet_grid(dateType ~ .) +
+    facet_grid( ~ dateType) +
+    facet_wrap( ~ dateType, ncol=1) +
     xlab("5-minute interval") + 
     ylab("avarage number of steps")
+```
+
+* Panel using lattice
+
+```{r}
+xyplot(steps ~ interval | dateType,
+       data = ImputedSet,
+       type = c("l","g"),
+       layout=c(1,2)
+)
+
 ```
